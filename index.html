@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+</head>
+
+<body>
+  <div id="app" >
+    <div  class="hi-flex hi-gap-8">
+      <div id="box1" class="hi-w-72 hi-h-72 hi-text-center hi-bg-red-100">Box 1</div>
+      <div class="hi-w-72 hi-h-72 hi-text-center hi-bg-blue-100">Box 2</div>
+
+    </div>
+
+    <div>
+      <div hi-list class="hi-flex hi-gap-4 hi-flex-col">
+        <div hi-data="" hi-menu="user" class="hi-p-4 hi-rounded-lg hi-border" tabindex="0">hello</div>
+        <div hi-menu="user" class="hi-p-4 hi-rounded-lg hi-border" tabindex="0">test</div>
+        <div hi-menu="user" class="hi-p-4 hi-rounded-lg hi-border" tabindex="0">hhhhh</div>
+      </div>
+    </div>
+  </div>
+  <!-- <script type="module" src=""></script> -->
+
+  <script type="module">
+    import Menu from '/src/main.js'
+    import {ShortCut} from 'hi-shortcut'
+    import Svg from './test.svg'
+
+    const shortcut = new ShortCut('ctrl')
+
+    shortcut.listen('select all', 'a',()=>{
+      const fo = document.querySelector('div[tabindex].hi-bg-gray-300');
+      if(fo){
+        document.querySelectorAll('div[tabindex]').forEach(item=>{
+          item.classList.add('hi-bg-gray-300')
+        })
+      }
+    })
+
+    const listDiv = document.querySelectorAll('div[tabindex]');
+
+    listDiv.forEach(item=>{
+      console.log('item tik')
+      item.addEventListener('focus', ()=>{
+        item.classList.add('hi-bg-gray-300')
+      }, true)
+
+      item.addEventListener('blur', ()=>{
+        item.classList.remove('hi-bg-gray-300')
+      }, true)
+    })
+
+    const menu = new Menu();
+    menu.setLongpressEvent()
+
+    menu.title('tetewkjtwekljtewlk')
+
+    menu.add('ویرایش', action=>{
+      alert('edit')
+    })
+
+    menu.add({
+      label:'حذف',
+      svgIcon:Svg
+    },()=>{
+
+    })
+
+    menu.add('مدیریت مالی', null,[
+    {label:'افزودن هزینه'},
+    {label:'دریافت هزینه'},
+  {
+    label:'دیگر',
+    svgIcon:Svg,
+    action:()=>{
+      alert('other')
+    }
+  }
+    ])
+
+   
+
+  </script>
+</body>
+
+</html>
