@@ -4,7 +4,7 @@ import svg_chevron_right from "./chevron_right.svg";
 export default class ContextMenu {
   longpress_event = false;
 
-  constructor(elementID) {
+  constructor(elementID, contextmenu_callback=null) {
     this.menu = document.createElement("div");
     this.menu.id = "custom-menu";
     this.menu.setAttribute(
@@ -23,18 +23,20 @@ export default class ContextMenu {
       this.elements = document.querySelectorAll(elementID);
     }
 
-    document.addEventListener("contextmenu", () => {
-      this.menu.style.display = "none";
-    });
-
     const event = (event) => {
       event.preventDefault();
+      const target = event.target;
+      this.event = event;
+      this.target = target;
 
-      setTimeout(() => {
-        this.menu.style.left = `${event.pageX}px`;
-        this.menu.style.top = `${event.pageY}px`;
-        this.menu.style.display = "block";
-      }, 50);
+      
+      this.menu.style.left = `${event.pageX}px`;
+      this.menu.style.top = `${event.pageY}px`;
+      this.menu.style.display = "block";
+      
+      if(typeof contextmenu_callback ==='function'){
+        contextmenu_callback(event)
+      }
     };
 
     this.setToElement((element) =>
@@ -101,12 +103,17 @@ export default class ContextMenu {
     this.elements.forEach(event);
   }
 
-  setData(data_object) {
-    this.data = data_object;
+
+  onFocus(callback){
+    this.setToElement(element=>{
+      element.addEventListener('focus', event=>callback(event))
+    })
   }
 
-  getData() {
-    return this.data_object;
+  onBlur(callback){
+    this.setToElement(element=>{
+      element.addEventListener('blur', event=>callback(event))
+    })
   }
 
   title(title, textAlign = "center") {
@@ -186,7 +193,7 @@ export default class ContextMenu {
       item.onclick = (e) => {
         e.stopPropagation();
         this.menu.style.display = "none";
-        action();
+        action(this.event);
       };
     }
 
