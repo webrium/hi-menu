@@ -1,4 +1,4 @@
-import "./style.css";
+import "./hi-menu.css";
 import svg_chevron_right from "./chevron_right.svg";
 
 export default class ContextMenu {
@@ -33,10 +33,18 @@ export default class ContextMenu {
 
     const event = (event) => {
       event.preventDefault();
-      const target = event.target;
+      const target = event.target.closest(elementID);
+      if (!target) return;
+    
       this.event = event;
       this.target = target;
-
+    
+      const menuWidth = this.menu.offsetWidth;
+      const menuHeight = this.menu.offsetHeight;
+    
+      let left = event.pageX;
+      let top = event.pageY;
+    
       if (window.innerWidth <= 768) {
         // Center the menu for mobile devices
         this.menu.style.left = "50%";
@@ -44,16 +52,26 @@ export default class ContextMenu {
         this.menu.style.transform = "translate(-50%, -50%)";
         this.backdrop.style.display = "block";
       } else {
-        // Show the menu at the cursor's position for larger screens
-        this.menu.style.left = `${event.pageX}px`;
-        this.menu.style.top = `${event.pageY}px`;
+        // Check if the menu exceeds the screen width
+        if (left + menuWidth > window.innerWidth) {
+          left = window.innerWidth - menuWidth - 10; // Add margin
+        }
+    
+        // Check if the menu exceeds the screen height
+        if (top + menuHeight > window.innerHeight) {
+          top = window.innerHeight - menuHeight - 10; // Add margin
+        }
+    
+        // Set the adjusted position
+        this.menu.style.left = `${left}px`;
+        this.menu.style.top = `${top}px`;
         this.menu.style.transform = "none";
       }
-
+    
       this.menu.style.display = "block";
-
+    
       if (typeof contextmenu_callback === "function") {
-        contextmenu_callback(event);
+        contextmenu_callback({ ...event, target });
       }
     };
 
@@ -81,13 +99,19 @@ export default class ContextMenu {
 
   onFocus(callback) {
     this.setToElement((element) => {
-      element.addEventListener("focus", (event) => callback(event));
+      element.addEventListener("focus", (event) => {
+        const target = event.target.closest(element.tagName);
+        if (target) callback({ ...event, target });
+      });
     });
   }
 
   onBlur(callback) {
     this.setToElement((element) => {
-      element.addEventListener("blur", (event) => callback(event));
+      element.addEventListener("blur", (event) => {
+        const target = event.target.closest(element.tagName);
+        if (target) callback({ ...event, target });
+      });
     });
   }
 
@@ -167,7 +191,7 @@ export default class ContextMenu {
       item.onclick = (e) => {
         e.stopPropagation();
         this.hideMenu();
-        action(this.event);
+        action({ ...this.event, target: this.target });
       };
     }
 
