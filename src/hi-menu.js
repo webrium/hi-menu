@@ -1,9 +1,9 @@
-import "./hi-menu.css";
-
 export default class ContextMenu {
   constructor(elementID, contextmenu_callback = null) {
     this.createMenuElements();
-    this.elements = elementID ? document.querySelectorAll(elementID) : [document];
+    this.elements = elementID
+      ? document.querySelectorAll(elementID)
+      : [document];
     this.contextmenu_callback = contextmenu_callback;
 
     this.attachEventListeners(elementID);
@@ -12,7 +12,8 @@ export default class ContextMenu {
   createMenuElements() {
     this.menu = this.createElement("div", {
       id: "custom-menu",
-      class: "hi-select-none hi-bg-white dark:hi-bg-slate-800 dark:hi-text-white hi-absolute hi-flex hi-flex-col hi-gap-2 hi-shadow-md hi-shadow-gray-400 dark:hi-shadow-gray-100/50 hi-p-4 hi-z-[1000] hi-rounded-lg hi-w-[90%] hi-max-w-[300px]",
+      class:
+        "hi-select-none hi-bg-white dark:hi-bg-slate-800 dark:hi-text-white hi-absolute hi-flex hi-flex-col hi-gap-2 hi-shadow-md hi-shadow-gray-400 dark:hi-shadow-gray-100/50 hi-p-4 hi-z-[1000] hi-rounded-lg hi-w-[90%] hi-max-w-[300px]",
       style: { display: "none" },
     });
 
@@ -58,7 +59,10 @@ export default class ContextMenu {
   }
 
   displayMenu(event) {
-    const { pageX: left, pageY: top } = event;
+    this.menu.style.display = "block";
+
+    const { clientX: left, layerY: top } = event;
+
     const { offsetWidth: menuWidth, offsetHeight: menuHeight } = this.menu;
 
     if (window.innerWidth <= 768) {
@@ -67,12 +71,28 @@ export default class ContextMenu {
       this.menu.style.transform = "translate(-50%, -50%)";
       this.backdrop.style.display = "block";
     } else {
-      this.menu.style.left = `${Math.min(left, window.innerWidth - menuWidth - 10)}px`;
-      this.menu.style.top = `${Math.min(top, window.innerHeight - menuHeight - 10)}px`;
+      if (left + menuWidth > window.innerWidth) {
+        this.menu.style.left = `${window.innerWidth - menuWidth}px`;
+      } else {
+        this.menu.style.left = `${Math.min(left)}px`;
+      }
+
+      var body = document.body,
+        html = document.documentElement;
+
+      var height = Math.max(
+        // body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        // html.scrollHeight,
+        html.offsetHeight
+      );
+
+      
+      this.menu.style.top = `${Math.min(top,height-(menuHeight+10))}px`;
+
       this.menu.style.transform = "none";
     }
-
-    this.menu.style.display = "block";
 
     if (typeof this.contextmenu_callback === "function") {
       this.contextmenu_callback({ ...event, target: this.target });
@@ -108,10 +128,12 @@ export default class ContextMenu {
         "data-title": "true",
         style: { paddingTop: "4px", paddingBottom: "4px", textAlign },
       });
+
       titleDiv.innerHTML = title;
 
-      const hr = this.createElement("hr", { style: { opacity: 0.5 } });
-      this.menu.prepend(hr, titleDiv);
+      const hr = this.createElement("hr", { style: { opacity: 0.3 } });
+      this.menu.prepend(titleDiv,hr);
+
     } else {
       titleDiv.style.textAlign = textAlign;
       titleDiv.innerHTML = title;
@@ -120,14 +142,18 @@ export default class ContextMenu {
 
   makeSvgFromData(svgIcon, add_class) {
     const svgDecoded = decodeURIComponent(svgIcon.split(",")[1]);
-    const svgElement = new DOMParser().parseFromString(svgDecoded, "image/svg+xml").documentElement;
+    const svgElement = new DOMParser().parseFromString(
+      svgDecoded,
+      "image/svg+xml"
+    ).documentElement;
     svgElement.setAttribute("class", add_class);
     return svgElement;
   }
 
   add(label, action = null) {
     const item = this.createElement("div", {
-      class: "hi-relative hi-flex hi-items-center hi-justify-between hi-gap-2 hover:hi-bg-gray-200 dark:hover:hi-bg-gray-600 hi-duration-100 hi-px-1 hi-py-3 hi-rounded hi-min-w-32",
+      class:
+        "hi-relative hi-flex hi-items-center hi-justify-between hi-gap-2 hover:hi-bg-gray-200 dark:hover:hi-bg-gray-600 hi-duration-100 hi-px-1 hi-py-3 hi-rounded hi-min-w-32",
     });
 
     const textContent = this.createElement("div");
