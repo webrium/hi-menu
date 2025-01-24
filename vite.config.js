@@ -2,14 +2,15 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
+    minify: true, 
     lib: {
-      entry: 'src/main.js',
-      name: 'HiMenu',
+      entry: 'src/hi-menu.js',
+      name: 'hi-menu',
       // formats: ['es', 'umd'],
       // fileName: (format) => `hi-menu.${format}.js`,
     },
     rollupOptions: {
-      external: [], // اضافه کردن وابستگی‌های خارجی
+      external: [],
     },
   },
 });

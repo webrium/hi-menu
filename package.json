@@ -1,13 +1,13 @@
 {
   "name": "hi-menu",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "main": "dist/himenu.js",
+  "main": "./dist/hi-menu.js",
   "files": ["dist", "README.md"],
   "devDependencies": {
     "autoprefixer": "^10.4.20",

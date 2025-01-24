@@ -20,41 +20,15 @@
       <div id="item_list" hi-list class="hi-flex hi-gap-4 hi-flex-col">
         <div hi-data="1" hi-menu="item_1" class="hi-p-4 hi-rounded-lg hi-border" tabindex="0">Item 1</div>
         <div hi-data="2" hi-menu="item_2" class="hi-p-4 hi-rounded-lg hi-border" tabindex="0">Item 2</div>
-        <div hi-data="3" hi-menu="item_3" class="hi-p-4 hi-rounded-lg hi-border" tabindex="0">
-          
-          <div>
-            <p>testsss</p>
-          </div>
-
-          <p>
-
-            fdsfds
-            <div><h3>jfdsfdsf  H3</h3></div>
-          </p>
-        </div>
-        <div hi-data="3" hi-menu="item_4" class="hi-p-4 hi-rounded-lg hi-border" tabindex="0">Item 4</div>
+        <div hi-data="3" hi-menu="item_4" class="hi-p-4 hi-rounded-lg hi-border" tabindex="0">Item 3</div>
       </div>
     </div>
   </div>
   <!-- <script type="module" src=""></script> -->
 
   <script type="module">
-    import Menu from '/src/main.js'
-    import { ShortCut } from 'hi-shortcut'
-    import Svg from './test.svg'
 
-    const shortcut = new ShortCut('ctrl')
-
-    shortcut.listen('select all', 'a', () => {
-      const fo = document.querySelector('div[tabindex].hi-bg-gray-300');
-      if (fo) {
-        document.querySelectorAll('div[tabindex]').forEach(item => {
-          item.classList.add('hi-bg-gray-300')
-        })
-      }
-    })
-
-    
+    import Menu from '/src/hi-menu.js'
 
 
     const setMenuItems = () => {
@@ -63,16 +37,15 @@
         menu.title('Menu : ' + event.target.innerHTML)
       });
 
-      menu.onFocus((event)=>{
+      menu.onFocus((event) => {
         event.target.classList.add('hi-bg-gray-300')
         console.log('menu data : ', event.target.getAttribute('hi-data'))
       })
 
-      menu.onBlur(event=>{
+      menu.onBlur(event => {
         event.target.classList.remove('hi-bg-gray-300')
       })
 
-      menu.setLongpressEvent()
 
       menu.add('Edit', (action) => {
         console.log(action)
@@ -85,7 +58,22 @@
       }, event => {
         event.target.remove()
       })
+
+
+
+      menu.add(
+        { label: "Test sub" },
+        null,
+        [
+        {
+          label:'Test',
+          action:()=>{console.log('click')}
+        }
+        ]
+      );
     }
+
+
 
     setMenuItems()
 
