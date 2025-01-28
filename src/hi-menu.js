@@ -1,3 +1,4 @@
+import './hi-menu.css'
 export default class ContextMenu {
   constructor(elementID, contextmenu_callback = null) {
     this.createMenuElements();
